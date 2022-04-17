@@ -37,7 +37,7 @@ export default class ChatWindow extends Component {
 
         // Web Socket Connection
         let ws = new WebSocket(
-            `ws://localhost:3000/chat/${this.props.loggedInUserObj._id}`
+            `wss://versify-backend.herokuapp.com/chat/${this.props.loggedInUserObj._id}`
         );
         console.log('New Web Socket Connection: ', ws);
 
