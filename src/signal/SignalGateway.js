@@ -1,7 +1,7 @@
 import util from './helpers';
 import SignalProtocolStore from './InMemorySignalProtocolStore';
 
-const libsignal = window.libsignal;
+const signalHelper = window.libsignal;
 /**
  * Dummy signal server connector.
  *
@@ -95,12 +95,12 @@ class SignalProtocolManager {
         var sessionCipher = this.store.loadSessionCipher(remoteUserId);
 
         if (sessionCipher == null) {
-            var address = new libsignal.SignalProtocolAddress(
+            var address = new signalHelper.SignalProtocolAddress(
                 remoteUserId,
                 123
             );
             // Instantiate a SessionBuilder for a remote recipientId + deviceId tuple.
-            var sessionBuilder = new libsignal.SessionBuilder(
+            var sessionBuilder = new signalHelper.SessionBuilder(
                 this.store,
                 address
             );
@@ -112,7 +112,7 @@ class SignalProtocolManager {
             // identityKey differs from a previously seen identity for this address.
             await sessionBuilder.processPreKey(remoteUserPreKey);
 
-            sessionCipher = new libsignal.SessionCipher(this.store, address);
+            sessionCipher = new signalHelper.SessionCipher(this.store, address);
             this.store.storeSessionCipher(remoteUserId, sessionCipher);
         }
 
@@ -133,11 +133,11 @@ class SignalProtocolManager {
         var sessionCipher = this.store.loadSessionCipher(remoteUserId);
 
         if (sessionCipher == null) {
-            var address = new libsignal.SignalProtocolAddress(
+            var address = new signalHelper.SignalProtocolAddress(
                 remoteUserId,
                 123
             );
-            sessionCipher = new libsignal.SessionCipher(this.store, address);
+            sessionCipher = new signalHelper.SessionCipher(this.store, address);
             this.store.storeSessionCipher(remoteUserId, sessionCipher);
         }
 
@@ -167,8 +167,8 @@ class SignalProtocolManager {
      */
     async _generateIdentityAsync() {
         var results = await Promise.all([
-            libsignal.KeyHelper.generateIdentityKeyPair(),
-            libsignal.KeyHelper.generateRegistrationId(),
+            signalHelper.KeyHelper.generateIdentityKeyPair(),
+            signalHelper.KeyHelper.generateRegistrationId(),
         ]);
 
         this.store.put('identityKey', results[0]);
@@ -190,8 +190,8 @@ class SignalProtocolManager {
         let registrationId = result[1];
 
         var keys = await Promise.all([
-            libsignal.KeyHelper.generatePreKey(registrationId + 1),
-            libsignal.KeyHelper.generateSignedPreKey(
+            signalHelper.KeyHelper.generatePreKey(registrationId + 1),
+            signalHelper.KeyHelper.generateSignedPreKey(
                 identity,
                 registrationId + 1
             ),

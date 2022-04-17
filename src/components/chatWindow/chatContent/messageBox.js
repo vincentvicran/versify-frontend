@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import moment from 'moment';
 import './chatContent.css';
 import Avatar from '../chatList/Avatar';
@@ -11,6 +11,27 @@ export default class MessageBox extends Component {
             msgText: '',
         };
         this.sendMessageToServer = this.sendMessageToServer.bind(this);
+    }
+
+    messagesEndRef = createRef(null);
+    scrollToBottom = () => {
+        this.messagesEndRef.current.scrollIntoView({
+            behavior: 'smooth',
+            block: 'end',
+        });
+    };
+
+    componentDidMount() {
+        if (this.messagesEndRef.current) {
+            this.scrollToBottom();
+        }
+        window.addEventListener('keydown', (e) => {
+            e.key === 'Enter' && this.scrollToBottom();
+        });
+    }
+
+    componentDidUpdate() {
+        this.scrollToBottom();
     }
 
     handleMessageText(e) {
@@ -103,15 +124,17 @@ export default class MessageBox extends Component {
                 <div className="content__body">
                     <div className="chat__items">
                         {this.addMessagesToChat()}
-                        <div ref={this.messagesEndRef} />
                     </div>
+                    <div ref={this.messagesEndRef} />
                 </div>
                 <div className="content__footer">
                     <form
                         className="sendNewMessage"
                         onSubmit={(e) => {
                             e.preventDefault();
+
                             this.sendMessageToServer();
+                            this.scrollToBottom();
                         }}
                     >
                         <button className="addFiles">
