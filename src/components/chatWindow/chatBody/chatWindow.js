@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import ContactList from './contactList';
-import MessageBox from './messageBox';
-import API from '../../services/api';
+import ContactList from '../chatList/contactList';
+import MessageBox from '../chatContent/messageBox';
+import API from '../../../services/api';
 
 export default class ChatWindow extends Component {
     constructor(props) {
@@ -131,7 +131,7 @@ export default class ChatWindow extends Component {
             receiverid: this.state.messageToUser._id,
             ...newMsgObj,
         };
-        // Send Message for Encryption to Signal Server, then send the Encrypted Message to Push server
+        // Send Message for Encryption to Encryption Utility, then send the Encrypted Message to Push server
         try {
             let encryptedMessage =
                 await this.props.signalProtocolManagerUser.encryptMessageAsync(
@@ -161,7 +161,16 @@ export default class ChatWindow extends Component {
 
     render() {
         return (
-            <div className="container flex mx-auto m-2 rounded h-screen bg-white border border-blue-800 bg-gray-100">
+            <div
+                style={{
+                    display: 'flex',
+                    flexGrow: 1,
+                    backgroundColor: '#f4f3f8',
+                    borderRadius: '10px',
+                    padding: '15px 20px',
+                    height: '80vh',
+                }}
+            >
                 {this.state.users.length > 0 && (
                     <ContactList
                         users={this.state.users}
@@ -172,7 +181,7 @@ export default class ChatWindow extends Component {
                 {this.state.messageToUser && (
                     <MessageBox
                         selectedUser={this.state.messageToUser}
-                        loggedInUserDP={this.props.loggedInUserObj.img}
+                        loggedInUserDP={this.props.loggedInUserObj.name}
                         setNewMsgObj={this.getNewMsgObj}
                         messages={
                             this.state.chats[this.getSelectedUserChatId()] &&
